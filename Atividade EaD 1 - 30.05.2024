@@ -1,0 +1,58 @@
+def obter_nota(mensagem, minimo, maximo):
+    while True:
+        try:
+            nota = float(input(mensagem))
+            if minimo <= nota <= maximo:
+                return nota
+            else:
+                print(f"Nota inválida! Digite um valor entre {minimo} e {maximo}.")
+        except ValueError:
+            print("Entrada inválida! Digite um número.")
+
+def calcular_status(notas):
+    SM = sum(notas[:-1])  # Soma do Módulo sem considerar a prova de recuperação
+    MM = (SM + notas[-1]) / 2  # Média do Módulo
+
+    if SM >= 7.0:
+        return "Aprovado", SM, MM
+    elif MM >= 5.0:
+        return "Aprovado", SM, MM
+    else:
+        return "Reprovado", SM, MM
+
+def main():
+    num_alunos = 5
+    resultados = {"Aprovado": 0, "Reprovado": 0}
+
+    for i in range(num_alunos):
+        print(f"\nAluno {i+1}")
+
+        aop1 = obter_nota("Nota da AOP1 (0-1): ", 0, 1)
+        aop2 = obter_nota("Nota da AOP2 (0-2): ", 0, 2)
+        aop3 = obter_nota("Nota da AOP3 (0-1): ", 0, 1)
+        prova_regular = obter_nota("Nota da Prova Regular (0-6): ", 0, 6)
+
+        notas = [aop1, aop2, aop3, prova_regular, 0]  # Inicialmente a prova de recuperação é 0
+
+        SM = sum(notas[:-1])  # Soma do Módulo sem considerar a prova de recuperação
+
+        if SM < 7.0:
+            prova_recuperacao = obter_nota("Nota da Prova de Recuperação (0-10): ", 0, 10)
+            notas[-1] = prova_recuperacao  # Atualizar a nota da prova de recuperação
+
+        status, SM, MM = calcular_status(notas)
+        print(f"Soma do Módulo (SM): {SM:.2f}")
+        print(f"Média do Módulo (MM): {MM:.2f}")
+        print(f"Status do Aluno: {status}")
+
+        resultados[status] += 1
+
+    # Calcular porcentagens
+    porcentagem_aprovados = (resultados["Aprovado"] / num_alunos) * 100
+    porcentagem_reprovados = (resultados["Reprovado"] / num_alunos) * 100
+
+    print(f"\nPorcentagem de alunos aprovados: {porcentagem_aprovados:.2f}%")
+    print(f"Porcentagem de alunos reprovados: {porcentagem_reprovados:.2f}%")
+
+if __name__ == "__main__":
+    main()
